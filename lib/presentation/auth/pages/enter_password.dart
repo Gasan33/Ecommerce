@@ -7,6 +7,7 @@ import 'package:bloc_ecommerce/data/auth/models/user_signin_req.dart';
 import 'package:bloc_ecommerce/domain/auth/usecases/signin.dart';
 import 'package:bloc_ecommerce/presentation/auth/bloc/password_hide_cubit.dart';
 import 'package:bloc_ecommerce/presentation/auth/pages/forget_password.dart';
+import 'package:bloc_ecommerce/presentation/home/pages/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -35,12 +36,15 @@ class EnterPasswordPage extends StatelessWidget {
           ],
           child: BlocListener<ButtonStateCubit, ButtonState>(
             listener: (context, state) {
-              if (state is ButtonFailureState){
-                var snackbar = SnackBar(content: Text(state.errorMessage),behavior: SnackBarBehavior.floating,);
+              if (state is ButtonFailureState) {
+                var snackbar = SnackBar(
+                  content: Text(state.errorMessage),
+                  behavior: SnackBarBehavior.floating,
+                );
                 ScaffoldMessenger.of(context).showSnackBar(snackbar);
               }
-              if (state is ButtonSuccessState){
-
+              if (state is ButtonSuccessState) {
+                AppNavigator.pushAndRemove(context, const HomePage());
               }
             },
             child: Column(
@@ -90,17 +94,17 @@ class EnterPasswordPage extends StatelessWidget {
   }
 
   Widget _continueButton(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        return BasicReactiveButton(
-          onPressed: () {
-            userSigninReq.password=_passwordController.text;
-            context.read<ButtonStateCubit>().execute(usecase: SigninUseCase(),params: userSigninReq);
-          },
-          title: 'continue',
-        );
-      }
-    );
+    return Builder(builder: (context) {
+      return BasicReactiveButton(
+        onPressed: () {
+          userSigninReq.password = _passwordController.text;
+          context
+              .read<ButtonStateCubit>()
+              .execute(usecase: SigninUseCase(), params: userSigninReq);
+        },
+        title: 'continue',
+      );
+    });
   }
 
   Widget _forgetPassword(BuildContext context) {
@@ -112,7 +116,7 @@ class EnterPasswordPage extends StatelessWidget {
       TextSpan(
           recognizer: TapGestureRecognizer()
             ..onTap = () {
-              AppNavigator.push(context,  ForgetPasswordPage());
+              AppNavigator.push(context, ForgetPasswordPage());
             },
           text: 'Reset',
           style: const TextStyle(fontWeight: FontWeight.bold))

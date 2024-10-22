@@ -13,6 +13,8 @@ abstract class AuthFirebaseService {
   Future<Either> getAges();
 
   Future<Either> sendPasswordResetEmail(String email);
+
+  Future<bool> isLoggedIn();
 }
 
 class AuthFirebaseServiceImpl extends AuthFirebaseService {
@@ -76,12 +78,21 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
   }
 
   @override
-  Future<Either> sendPasswordResetEmail(String email)async {
+  Future<Either> sendPasswordResetEmail(String email) async {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       return const Right("Password reset email is sent");
     } catch (e) {
       return const Left("please try again");
+    }
+  }
+
+  @override
+  Future<bool> isLoggedIn() async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      return true;
+    } else {
+      return false;
     }
   }
 }
